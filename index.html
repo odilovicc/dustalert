@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#193e35"><meta name="description" content="DustAlert — качество воздуха, карта пыли и простые шаги для заботы о здоровье и городе.">
+  <title>DustAlert — Дышите легче</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="style.css?v=activities-1">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script defer src="script.js?v=activities-1"></script>
+</head>
+<body>
+<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="wind" viewBox="0 0 24 24"><path d="M3 8h12a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h6a3 3 0 1 1-3 3"/></symbol>
+<symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/></symbol>
+<symbol id="icon-map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2zM9 3v16M15 5v16"/></symbol>
+<symbol id="bell" viewBox="0 0 24 24"><path d="M4 17h16l-2-4V9a6 6 0 0 0-12 0v4zM10 21h4"/></symbol>
+<symbol id="leaf" viewBox="0 0 24 24"><path d="M20 3C5 2 1 11 7 17s15 2 13-14ZM4 21 15 10"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></symbol>
+<symbol id="tree" viewBox="0 0 24 24"><path d="m12 2-6 7h3l-5 6h6v7h4v-7h6l-5-6h3Z"/></symbol>
+<symbol id="walk" viewBox="0 0 24 24"><circle cx="14" cy="4" r="2"/><path d="m7 21 4-7-1-5 3-2 3 5h4M5 12l5-3m1 5 5 7"/></symbol>
+<symbol id="bike" viewBox="0 0 24 24"><circle cx="5" cy="16" r="4"/><circle cx="19" cy="16" r="4"/><path d="m5 16 5-9 4 9H5m5-9h7l2 9M8 4h4m4-2h3l1 4"/></symbol>
+<symbol id="picnic" viewBox="0 0 24 24"><path d="M3 12h18l-2 9H5zM7 12l5-9 5 9M9 16v2m6-2v2M2 12h20"/></symbol>
+<symbol id="exercise" viewBox="0 0 24 24"><path d="M7 12h10M3 8v8m4-10v12m10-12v12m4-10v8M1 12h2m18 0h2"/></symbol>
+</defs></svg>
+<aside class="sidebar">
+ <a class="brand" href="#home"><span class="brand-mark"><svg><use href="#wind"/></svg></span>DustAlert</a>
+ 
+ <nav aria-label="Основная навигация">
+  <a href="#home" class="nav-link active"><svg><use href="#icon-home"/></svg>Главная</a>
+  <a href="#map-section" class="nav-link"><svg><use href="#icon-map"/></svg>Карта пыли</a>
+  <a href="#alerts" class="nav-link"><svg><use href="#bell"/></svg>Оповещения</a>
+  <a href="#tips" class="nav-link"><svg><use href="#leaf"/></svg>Советы</a>
+  <a href="#events" class="nav-link"><svg><use href="#tree"/></svg>События</a>
+ </nav>
+ <button class="button report-button" data-report><span>＋</span> Сообщить о пыли</button>
+ 
+</aside>
+<div class="app">
+ <header class="topbar"><div class="breadcrumb">Обзор <span>/</span> <strong>Главная</strong></div><div class="top-actions"><button class="location-button" id="choose-city"><svg><use href="#pin"/></svg><span class="city-name">Ташкент</span><span class="chevron">⌄</span></button><span class="top-divider"></span><button class="icon-button" id="notification-top" aria-label="Настроить уведомления"><svg><use href="#bell"/></svg></button></div></header>
+ <main id="home">
+  <section class="page-heading"><div><h1>Дышите легче<br>с DustAlert</h1></div><div class="today" id="today"></div></section>
+  <section class="overview-grid" aria-label="Качество воздуха">
+   <article class="air-card"><div class="card-top"><span> Качество воздуха</span><button id="refresh" class="refresh-button" aria-label="Обновить данные">↻</button></div><div class="air-main"><div><div class="city-title"><svg><use href="#pin"/></svg><span class="city-name">Ташкент</span><span class="country-name">Узбекистан</span></div><h2 id="quality-label">Загружаем данные</h2><p id="quality-description">Проверяем качество воздуха в выбранном городе.</p></div><div class="aqi-circle"><strong id="aqi">—</strong><span>US AQI</span></div></div><div class="air-scale"><span></span><span></span><span></span><span></span><i id="scale-pointer" hidden></i></div><div class="scale-labels"><span>Хороший</span><span>Очень плохой</span></div><div class="air-bottom"><span id="updated">Ожидание ответа API</span><span>Open-Meteo · CAMS</span></div></article>
+   <article class="particle-card"><h3>PM2.5</h3><div class="particle-value"><strong id="pm25">—</strong><span>мкг/м³</span></div><p>Мелкодисперсные частицы</p><div class="particle-track"><span id="pm25-bar"></span></div></article>
+   <article class="particle-card"><h3>PM10</h3><div class="particle-value"><strong id="pm10">—</strong><span>мкг/м³</span></div><p>Взвешенные частицы пыли</p><div class="particle-track"><span id="pm10-bar"></span></div></article>
+  </section>
+  <details class="data-details"><summary>О данных и выбранном городе</summary><p class="data-note"><span>ⓘ</span> Ташкент выбран по умолчанию, геолокация не определялась. Данные API — прогноз модели, а не измерения местной станции.</p></details>
+  <section id="alerts" class="alert-strip"><div class="alert-symbol"><svg><use href="#shield"/></svg></div><div><h3 id="alert-title">Предупреждения о воздухе</h3><p id="alert-text">Получайте предупреждения при ухудшении воздуха.</p></div><button class="text-button" id="notification-button"><svg><use href="#bell"/></svg><span>Включить уведомления</span><span>↗</span></button></section>
+  <section id="activities" class="activities-section" aria-labelledby="activities-title">
+   <div class="section-heading"><h2 id="activities-title">Планы на свежем воздухе</h2></div>
+   <div class="activity-controls"><p>По качеству воздуха · <span id="activity-place">выбранное место</span></p><label class="sensitive-toggle"><input type="checkbox" id="sensitive-mode">Учитывать чувствительность к загрязнению</label></div>
+   <p id="activity-summary" class="activity-summary" aria-live="polite">Ждём прогноз качества воздуха.</p>
+   <div id="activity-cards" class="activity-grid"></div>
+   <div class="activity-health"><svg aria-hidden="true"><use href="#shield"/></svg><p id="activity-health">Рекомендации появятся после загрузки данных.</p></div>
+   <details class="activity-details"><summary>Что учитывают рекомендации?</summary><p>Используем общий индекс US AQI, включая загрязнение частицами и газами. Режим повышенной осторожности подходит детям, пожилым людям и людям с заболеваниями сердца или лёгких. Температуру, ветер, осадки и состояние места для пикника проверьте отдельно.</p><a href="https://www.airnow.gov/publications/air-quality-index/air-quality-guide-for-particle-pollution/" target="_blank" rel="noopener">Рекомендации AirNow ↗</a></details>
+  </section>
+  <div class="content-grid">
+   <section class="panel map-panel" id="map-section"><div class="section-heading"><div><h2>Карта пыли</h2></div><button class="text-button" id="expand-map">Развернуть <span>↗</span></button></div><div class="map-toolbar"><form id="search-form" class="search-box"><svg><use href="#search"/></svg><input id="city-search" placeholder="Найти город или район" aria-label="Город или район" minlength="2" required><button type="submit" aria-label="Найти">↵</button></form><button class="filter-button" id="filter-button" aria-expanded="false">☷ <span>Слои</span></button></div><div class="search-results" id="search-results" aria-live="polite" hidden></div><div class="layer-menu" id="layer-menu" hidden><label><input id="air-layer" type="checkbox" checked> Прогноз запылённости</label><label><input id="reports-layer" type="checkbox" checked> Мои сообщения о пыли</label></div><div class="map-container"><div id="map" aria-label="Интерактивная карта OpenStreetMap"></div><button class="locate-button" id="locate" aria-label="Определить моё местоположение">◎</button><div class="map-info">CAMS · модельный прогноз</div></div><div class="map-legend"><span><i class="green"></i>Чище</span><span><i class="yellow"></i>Умеренно</span><span><i class="orange"></i>Пыльно</span><span><i class="red"></i>Сильная пыль</span></div></section>
+   <aside class="right-column"><section class="daily-tip"><h2>Чистый воздух<br>начинается дома</h2><p>Убирайте пыль влажной тканью, чтобы она не поднималась в воздух.</p><a href="#tips" class="text-button">Больше полезных советов <span>↗</span></a><div class="plant-art" aria-hidden="true"><span class="plant-leaf l1"></span><span class="plant-leaf l2"></span><span class="plant-leaf l3"></span><span class="plant-leaf l4"></span><span class="plant-stem"></span><span class="plant-pot"></span><span class="plant-shadow"></span></div></section><section class="community-card"><div class="community-icon"><svg><use href="#pin"/></svg></div><h3>Видите пыль? Отметьте её.</h3><p>Сохраните проблемное место на карте.</p><button class="button" data-report>Сообщить о пыли <span>＋</span></button><small>Сообщения хранятся только на устройстве</small></section></aside>
+  </div>
+  <section id="tips" class="tips-section"><div class="section-heading"><div><h2>Простые советы</h2></div></div><div class="tips-grid">
+   <button class="tip-card" data-tip="home"><span class="tip-icon"><svg><use href="#icon-home"/></svg></span><h3>Меньше пыли дома</h3><span class="tip-link">Читать советы <span>↗</span></span></button>
+   <button class="tip-card" data-tip="health"><span class="tip-icon peach"><svg><use href="#shield"/></svg></span><h3>Защитите своё здоровье</h3><span class="tip-link">Читать советы <span>↗</span></span></button>
+   <button class="tip-card" data-tip="street"><span class="tip-icon blue"><svg><use href="#wind"/></svg></span><h3>Чище улицы — легче дышать</h3><span class="tip-link">Читать советы <span>↗</span></span></button>
+   <button class="tip-card" data-tip="trees"><span class="tip-icon"><svg><use href="#tree"/></svg></span><h3>Больше зелени вокруг</h3><span class="tip-link">Читать советы <span>↗</span></span></button>
+  </div></section>
+  <section id="events" class="events-section"><div class="event-art" aria-hidden="true"><svg><use href="#tree"/></svg><svg><use href="#tree"/></svg><svg><use href="#tree"/></svg></div><div><h2>Сделаем город зеленее</h2><p>Посадка деревьев, уборка улиц, забота о парках.</p></div><button class="button secondary" id="add-event">Добавить мероприятие <span>↗</span></button></section><div id="event-list" class="event-list"><p class="empty-events">Пока нет добавленных мероприятий. Подтверждённая городская афиша не подключена.</p></div>
+  <footer><a class="footer-brand" href="#home"><svg><use href="#wind"/></svg> DustAlert</a><a href="https://open-meteo.com/en/docs/air-quality-api" target="_blank" rel="noopener">Данные: Open-Meteo & CAMS ↗</a></footer>
+ </main>
+</div>
+<dialog id="report-dialog"><form id="report-form"><div class="dialog-heading"><div><h2>Сообщить о пыли</h2></div><button type="button" class="close-dialog" aria-label="Закрыть">×</button></div><p>Отметьте точку на карте. Сообщение сохранится только в этом браузере и не будет отправлено городским службам.</p><div id="report-map"></div><label>Выбранное место<input id="report-location" readonly required placeholder="Нажмите на карту, чтобы выбрать место"></label><label>Тип проблемы<select id="report-type"><option>Пыльная дорога</option><option>Строительная площадка</option><option>Сильная пыль</option><option>Другое</option></select></label><label>Короткое описание<textarea id="report-description" rows="3" maxlength="500" required placeholder="Что происходит в этом месте?"></textarea></label><label>Фотография <span class="subtle">необязательно, до 3 МБ</span><input type="file" id="report-photo" accept="image/jpeg,image/png,image/webp"></label><img id="photo-preview" alt="Предпросмотр фотографии" hidden><p id="report-error" class="form-error" role="alert"></p><button class="button" type="submit">Сохранить сообщение на устройстве </button></form></dialog>
+<dialog id="tip-dialog"><div class="dialog-heading"><h2 id="tip-title"></h2><button class="close-dialog" aria-label="Закрыть">×</button></div><div id="tip-content"></div></dialog>
+<dialog id="event-dialog"><form id="event-form"><div class="dialog-heading"><h2>Добавить мероприятие</h2><button type="button" class="close-dialog" aria-label="Закрыть">×</button></div><p>Личная запись на этом устройстве. Проверьте время и место у организатора.</p><label>Название<input id="event-title" required maxlength="100" placeholder="Например, уборка парка"></label><label>Дата и время<input id="event-date" type="datetime-local" required></label><label>Место<input id="event-place" required maxlength="150"></label><label>Тип<select id="event-type"><option>Посадка деревьев</option><option>Уборка улиц</option><option>Озеленение города</option></select></label><button class="button" type="submit">Сохранить мероприятие</button></form></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+</body></html>
